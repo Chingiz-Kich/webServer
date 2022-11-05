@@ -3,7 +3,6 @@ package kz.aitu;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
@@ -15,7 +14,8 @@ public class Worker extends Thread{
         this.socket = socket;
     }
 
-    @Override
+    /** I don't need this part from step 3, task 2**/
+/*    @Override
     public void run() {
         try {
             System.out.println("Got connection!");
@@ -34,5 +34,5 @@ public class Worker extends Thread{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }

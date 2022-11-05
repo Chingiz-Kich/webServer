@@ -1,4 +1,4 @@
-package kz.aitu;
+package kz.aitu.forMyself;
 
 import java.io.IOException;
 import java.io.PrintWriter;

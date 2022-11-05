@@ -7,7 +7,7 @@ import java.net.Socket;
 /**
  * Simple web server.
  */
-public class WebServer extends Thread{
+public class WebServer {
 
 
     public static void main(String[] args) {
@@ -21,38 +21,23 @@ public class WebServer extends Thread{
             System.out.println("Web Server is starting up, listening at port " + port + ".");
             System.out.println("You can access http://localhost:" + port + " now.");
 
+            int numOfThreads = (args.length > 1 ? Integer.parseInt(args[1]) : 20);
+            System.out.println("Thread Number:" + numOfThreads);
+            ThreadSafeQueue<Socket> safeQueue = new ThreadSafeQueue<>();
+
+            for (int i = 0; i < numOfThreads; i++) {
+                Consumer<Socket> cons = new Consumer<>(i, safeQueue);
+                cons.start();
+            }
+
+
             while (true) {
                 // Make the server socket wait for the next client request
                 Socket socket = serverSocket.accept();
-
-                /** This new Worker.class was added for multithreading **/
-                Worker worker = new Worker(socket);
-                /** Socket after accepting connection and creating Worker.class that process request itself
-                 * We will start() Worker.class instance to run it on separate thread**/
-                worker.start();
-
-                /** This part was changed for multithreading **/
-/*                // Make the server socket wait for the next client request
-                Socket socket = serverSocket.accept();
-
                 System.out.println("Got connection!");
 
-                // To read input from the client
-                BufferedReader input = new BufferedReader(
-                        new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
+                safeQueue.add(socket);
 
-                try {
-                    // Get request
-                    HttpRequest request = HttpRequest.parse(input);
-
-                    // Process request
-                    Processor proc = new Processor(socket, request);
-                    proc.process();
-                } catch (IOException ex) {
-                    ex.printStackTrace();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }*/
             }
         }
         catch (IOException ex) {
